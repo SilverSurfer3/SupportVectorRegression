@@ -1,0 +1,42 @@
+import numpy as np
+from sklearn.svm import SVR
+from sklearn.preprocessing import MinMaxScaler
+
+# Prepare the observed data
+observed_data = np.array( [
+    
+    
+    21, 36, 27, 20, 3, 16, 24, 31, 20, 19, 28, 10, 15, 3, 37
+                           
+                           
+                           
+                           
+                          ])
+# Reshape the observed data
+observed_data = observed_data.reshape(-1, 1)
+
+# Scale the observed data to [0, 1] range
+scaler = MinMaxScaler(feature_range=(0, 1))
+scaled_data = scaler.fit_transform(observed_data)
+
+# Prepare the features and target variables
+X = scaled_data[:-1]  # Features
+y = scaled_data[1:]   # Target variable
+
+# Create and train the SVR model
+model = SVR(kernel='rbf', gamma='scale')
+model.fit(X, y.ravel())
+
+# Prepare the input data for tomorrow's game (example)
+tomorrow_input = np.array([[5]])  # Replace with your desired input
+
+# Scale the input data
+scaled_input = scaler.transform(tomorrow_input)
+
+# Make the prediction for tomorrow's game
+scaled_prediction = model.predict(scaled_input.reshape(1, -1))
+
+# Inverse scale the prediction to the original range
+prediction = scaler.inverse_transform(scaled_prediction.reshape(-1, 1))
+
+print("Forecasted total runs for tomorrow's game:", prediction[0][0])
